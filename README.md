@@ -101,15 +101,15 @@ public static function DELETE(string $url, array $headers = null, bool $allow_re
 The `Response` class contain these members and this one public method:
 ```php
 class Response {
-	public		$headers;                // The response headers as an associative array
-	public		$url;                    // The URL the request was sent for
-	public		$status_code;            // HTTP status code
-	public		$ok;                     // false if status is a 40x or 50x code, true otherwise
-	public		$text;                   // Response body
-	public		$content;                // Same as text
-	public		$is_redirect;            // true if 30x redirect, false otherwise
-	public		$is_permanent_redirect;  // true if HTTP 301 or 308, false otherwise
-	public		$next;                   // If redirect, will contain the value of Location header as a string, null otherwise
+    public    $headers;                // The response headers as an associative array
+    public    $url;                    // The URL the request was sent for
+    public    $status_code;            // HTTP status code
+    public    $ok;                     // false if status is a 40x or 50x code, true otherwise
+    public    $text;                   // Response body
+    public    $content;                // Same as text
+    public    $is_redirect;            // true if 30x redirect, false otherwise
+    public    $is_permanent_redirect;  // true if HTTP 301 or 308, false otherwise
+    public    $next;                   // If redirect, will contain the value of Location header as a string, null otherwise
 ```
 ```php
 /**
@@ -130,8 +130,8 @@ $response = Requests::GET('https://github.com/');
 ```php
 // GET request with custom headers
 $response = Requests::GET('https://github.com/', [
-	'Accept'      => 'application/json',
-	'User-Agent'  => 'A potato'
+    'Accept'      => 'application/json',
+    'User-Agent'  => 'A potato'
 ]);
 ```
 ```php
@@ -152,34 +152,34 @@ object(stdClass)#2 (5) {
 ```php
 // POST request with data as form
 $response = Requests::POST('https://github.com/', [
-	'foo'      => 'bar',
-	'theword'  => 'a bird'
+    'foo'      => 'bar',
+    'theword'  => 'a bird'
 ]);
 ```
 ```php
 // POST request with data as form and custom headers
 $response = Requests::POST('https://github.com/', [
-	'foo'      => 'bar',
-	'theword'  => 'a bird'
+    'foo'      => 'bar',
+    'theword'  => 'a bird'
 ], [
-	'Accept'      => 'application/json',
-	'User-Agent'  => 'A potato'
+    'Accept'      => 'application/json',
+    'User-Agent'  => 'A potato'
 ]);
 ```
 ```php
 // PUT request with data as JSON
 // (all you can do with Requests::POST, can also be done with Requests::PUT, and vica versa)
 $response = Requests::PUT('https://github.com/', [
-	[
-		'foo'      => 'bar',
-		'theword'  => 'a bird',
-		'thecake'  => false,
-		'array'    => [
-			'a', 'b', 'c', 1, 2, 3, null, true, false, 3.14, []
-		]
-	]
+    [
+        'foo'      => 'bar',
+        'theword'  => 'a bird',
+        'thecake'  => false,
+        'array'    => [
+            'a', 'b', 'c', 1, 2, 3, null, true, false, 3.14, []
+        ]
+    ]
 ], [
-	'Content-Type' => 'application/json'
+    'Content-Type' => 'application/json'
 ]);
 /*
 Request body will look like this:

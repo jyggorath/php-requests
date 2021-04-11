@@ -1,6 +1,6 @@
 <?php
 
-/** 
+/**
  * PHP requests
  * 
  * User friendly HTTP requests library. Heavily inspired by Pythons requests package, and implemented as a wrapper around cURL.

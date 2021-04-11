@@ -100,10 +100,10 @@ class Requests {
 			$verify = false;
 		}
 		$handle = curl_init($url);
-		curl_setopt($handle, CURLOPT_HTTPHEADER,		self::collaps_headers($headers));
-		curl_setopt($handle, CURLOPT_FOLLOWLOCATION,	intval($allow_redirects));
-		curl_setopt($handle, CURLOPT_SSL_VERIFYPEER,	false);
-		curl_setopt($handle, CURLOPT_RETURNTRANSFER,	true);
+		curl_setopt($handle, CURLOPT_HTTPHEADER,     self::collaps_headers($headers));
+		curl_setopt($handle, CURLOPT_FOLLOWLOCATION, intval($allow_redirects));
+		curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
 		if (self::do_verification) {
 			curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, $verify);
 		}
@@ -140,9 +140,9 @@ class Requests {
 		}
 		$status_code = curl_getinfo($handle, CURLINFO_HTTP_CODE);
 		return [
-			'headers'		=> $headers,
-			'status_code'	=> $status_code,
-			'body'			=> $response_body
+			'headers'     => $headers,
+			'status_code' => $status_code,
+			'body'        => $response_body
 		];
 	}
 
@@ -323,15 +323,15 @@ class Requests {
 class Response {
 
 
-	public		$headers;
-	public		$url;
-	public		$status_code;
-	public		$ok;
-	public		$text;
-	public		$content;
-	public		$is_redirect;
-	public		$is_permanent_redirect;
-	public		$next;
+	public	$headers;
+	public	$url;
+	public	$status_code;
+	public	$ok;
+	public	$text;
+	public	$content;
+	public	$is_redirect;
+	public	$is_permanent_redirect;
+	public	$next;
 
 
 	/**
@@ -343,14 +343,14 @@ class Response {
 	 * @param string $url         The URL the request was sent for
 	 */
 	public function __construct(array $headers, int $status_code, string $body, string $url) {
-		$this->headers					= $headers;
-		$this->url						= $url;
-		$this->status_code				= $status_code;
-		$this->text						= $body;
-		$this->content					= $body;
-		$this->is_redirect				= false;
-		$this->is_permanent_redirect	= false;
-		$this->next						= null;
+		$this->headers               = $headers;
+		$this->url                   = $url;
+		$this->status_code           = $status_code;
+		$this->text                  = $body;
+		$this->content               = $body;
+		$this->is_redirect           = false;
+		$this->is_permanent_redirect = false;
+		$this->next                  = null;
 		if ($this->status_code >= 400 && $this->status_code <= 600) {
 			$this->ok = false;
 		}

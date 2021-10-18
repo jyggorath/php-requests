@@ -40,6 +40,10 @@ to
 ```php
 private const do_verification = true;
 ```
+and also add a path to the certificate to use on the line beneath:
+```php
+private const cert_path = '/path/to/cacert.pem';
+```
 This will likely require you to install certificates for PHP to use. [Relevant stackoverflow](https://stackoverflow.com/questions/28858351/php-ssl-certificate-error-unable-to-get-local-issuer-certificate).
 
 ### Functions and parameters

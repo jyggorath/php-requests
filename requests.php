@@ -18,7 +18,8 @@
 class Requests {
 
 
-	private const do_verification = false;
+	private const do_verification	= false;
+	private const cert_path			= '';
 
 
 	/**
@@ -105,7 +106,8 @@ class Requests {
 		curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
 		if (self::do_verification) {
-			curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, $verify);
+			curl_setopt($handle, CURLOPT_SSL_VERIFYPEER,	$verify);
+			curl_setopt($handle, CURLOPT_CAINFO,			self::cert_path);
 		}
 		return $handle;
 	}

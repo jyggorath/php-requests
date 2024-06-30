@@ -28,15 +28,16 @@ class Requests {
 	 * @param string $method          'GET' or 'DELETE'
 	 * @param string $url             URL
 	 * @param array  $headers         Custom request headers, if any (might be empty)
+	 * @param array  $proxies         Proxy server to use
 	 * @param bool   $allow_redirects Whether or not to follow 30x redirects
 	 * @param bool   $verify          Whether or not to verify certificate for HTTPS requests
 	 *                                Note: Won't allways apply, see Requests::curl_base
 	 * 
 	 * @return array Return value from Requests::curl_send
 	 */
-	private static function get_base(string $method, string $url, array $headers, bool $allow_redirects, bool $verify) : array {
+	private static function get_base(string $method, string $url, array $headers, array $proxies = null, bool $allow_redirects, bool $verify) : array {
 		$headers = self::lowercase_headers($headers);
-		$handle = self::curl_base($url, $headers, $allow_redirects, $verify);
+		$handle = self::curl_base($url, $headers, $proxies, $allow_redirects, $verify);
 		if ($method == 'DELETE') {
 			curl_setopt($handle, CURLOPT_CUSTOMREQUEST, 'DELETE');
 		}
@@ -52,19 +53,20 @@ class Requests {
 	 * @param string $url             URL
 	 * @param mixed  $data            Data for POST body, usually array, but may also be null, or (almost) anything if sent as JSON
 	 * @param array  $headers         Custom request headers, if any (might be empty)
+	 * @param array  $proxies         Proxy server to use
 	 * @param bool   $allow_redirects Whether or not to follow 30x redirects
 	 * @param bool   $verify          Whether or not to verify certificate for HTTPS requests
 	 *                                Note: Won't allways apply, see Requests::curl_base
 	 * 
 	 * @return array Return value from Requests::curl_send
 	 */
-	private static function post_base(string $method, string $url, $data, array $headers, bool $allow_redirects, bool $verify) : array {
+	private static function post_base(string $method, string $url, $data, array $headers, array $proxies = null, bool $allow_redirects, bool $verify) : array {
 		$headers = self::lowercase_headers($headers);
 		if (!array_key_exists('content-type', $headers)) {
 			// This might not be good in all cases (?)
 			$headers['content-type'] = 'application/x-www-form-urlencoded; charset=utf-8';
 		}
-		$handle = self::curl_base($url, $headers, $allow_redirects, $verify);
+		$handle = self::curl_base($url, $headers, $proxies, $allow_redirects, $verify);
 		if ($method == 'PUT') {
 			curl_setopt($handle, CURLOPT_CUSTOMREQUEST, 'PUT');
 		}
@@ -87,6 +89,7 @@ class Requests {
 	 * 
 	 * @param string $url             URL
 	 * @param array  $headers         Request headers
+	 * @param array  $proxies         Proxy server to use
 	 * @param bool   $allow_redirects Used to set cURL option CURLOPT_FOLLOWLOCATION
 	 * @param bool   $verify          Used to set cURL option CURLOPT_SSL_VERIFYPEER
 	 *                                Note: Regardless of how this parameter is set, if the URL is http 
@@ -96,7 +99,7 @@ class Requests {
 	 * 
 	 * @return CurlHandle
 	 */
-	private static function curl_base(string $url, array $headers, bool $allow_redirects, bool $verify) {
+	private static function curl_base(string $url, array $headers, array $proxies = null, bool $allow_redirects, bool $verify) {
 		if (!self::url_is_https($url)) {
 			$verify = false;
 		}
@@ -105,6 +108,9 @@ class Requests {
 		curl_setopt($handle, CURLOPT_FOLLOWLOCATION, intval($allow_redirects));
 		curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+		if ($proxies) {
+			curl_setopt($handle, CURLOPT_PROXY, $proxies['http']);
+		}
 		if (self::do_verification) {
 			curl_setopt($handle, CURLOPT_SSL_VERIFYPEER,	$verify);
 			curl_setopt($handle, CURLOPT_CAINFO,			self::cert_path);
@@ -226,18 +232,19 @@ class Requests {
 	 * 
 	 * @param string $url             URL
 	 * @param array  $headers         Custom request headers
+	 * @param array  $proxies         Proxy server to use, format: ['http' => '<server URI>']
 	 * @param bool   $allow_redirects Whether or not to follow 30x redirects
 	 * @param bool   $verify          Whether or not to verify certificate for HTTPS requests
 	 *                                Note: Won't allways apply, see Requests::curl_base
 	 * 
 	 * @return Response Response object
 	 */
-	public static function GET(string $url, array $headers = null, bool $allow_redirects = true, bool $verify = true) : Response {
+	public static function GET(string $url, array $headers = null, array $proxies = null, bool $allow_redirects = true, bool $verify = true) : Response {
 		$use_headers = [];
 		if ($headers !== null) {
 			$use_headers = $headers;
 		}
-		$result = self::get_base('GET', $url, $use_headers, $allow_redirects, $verify);
+		$result = self::get_base('GET', $url, $use_headers, $proxies, $allow_redirects, $verify);
 		return new Response($result['headers'], $result['status_code'], $result['body'], $url);
 	}
 
@@ -248,21 +255,22 @@ class Requests {
 	 * 
 	 * Made to be used similarly to requests.post in Python
 	 * 
-	 * @param string $url             URL (duh)
+	 * @param string $url             URL
 	 * @param mixed  $data            Data in POST body. Assoc. array if form, (almost) anything if JSON, null if nothing
 	 * @param array  $headers         Custom request headers
+	 * @param array  $proxies         Proxy server to use, format: ['http' => '<server URI>']
 	 * @param bool   $allow_redirects Whether or not to follow 30x redirects
 	 * @param bool   $verify          Whether or not to verify certificate for HTTPS requests
 	 *                                Note: Won't allways apply, see Requests::curl_base
 	 * 
 	 * @return Response Response object
 	 */
-	public static function POST(string $url, $data = null, array $headers = null, bool $allow_redirects = true, bool $verify = true) : Response {
+	public static function POST(string $url, $data = null, array $headers = null, array $proxies = null, bool $allow_redirects = true, bool $verify = true) : Response {
 		$use_headers = [];
 		if ($headers !== null) {
 			$use_headers = $headers;
 		}
-		$result = self::post_base('POST', $url, $data, $use_headers, $allow_redirects, $verify);
+		$result = self::post_base('POST', $url, $data, $use_headers, $proxies, $allow_redirects, $verify);
 		return new Response($result['headers'], $result['status_code'], $result['body'], $url);
 	}
 
@@ -273,21 +281,22 @@ class Requests {
 	 * 
 	 * Made to be used similarly to requests.put in Python
 	 * 
-	 * @param string $url             URL (duh)
+	 * @param string $url             URL
 	 * @param mixed  $data            Data in POST body. Assoc. array if form, (almost) anything if JSON, null if nothing
 	 * @param array  $headers         Custom request headers
+	 * @param array  $proxies         Proxy server to use, format: ['http' => '<server URI>']
 	 * @param bool   $allow_redirects Whether or not to follow 30x redirects
 	 * @param bool   $verify          Whether or not to verify certificate for HTTPS requests
 	 *                                Note: Won't allways apply, see Requests::curl_base
 	 * 
 	 * @return Response Response object
 	 */
-	public static function PUT(string $url, $data = null, array $headers = null, bool $allow_redirects = true, bool $verify = true) : Response {
+	public static function PUT(string $url, $data = null, array $headers = null, array $proxies = null, bool $allow_redirects = true, bool $verify = true) : Response {
 		$use_headers = [];
 		if ($headers !== null) {
 			$use_headers = $headers;
 		}
-		$result = self::post_base('PUT', $url, $data, $use_headers, $allow_redirects, $verify);
+		$result = self::post_base('PUT', $url, $data, $use_headers, $proxies, $allow_redirects, $verify);
 		return new Response($result['headers'], $result['status_code'], $result['body'], $url);
 	}
 
@@ -300,18 +309,19 @@ class Requests {
 	 * 
 	 * @param string $url             URL
 	 * @param array  $headers         Custom request headers
+	 * @param array  $proxies         Proxy server to use, format: ['http' => '<server URI>']
 	 * @param bool   $allow_redirects Whether or not to follow 30x redirects
 	 * @param bool   $verify          Whether or not to verify certificate for HTTPS requests
 	 *                                Note: Won't allways apply, see Requests::curl_base
 	 * 
 	 * @return Response Response object
 	 */
-	public static function DELETE(string $url, array $headers = null, bool $allow_redirects = true, bool $verify = true) : Response {
+	public static function DELETE(string $url, array $headers = null, array $proxies = null, bool $allow_redirects = true, bool $verify = true) : Response {
 		$use_headers = [];
 		if ($headers !== null) {
 			$use_headers = $headers;
 		}
-		$result = self::get_base('DELETE', $url, $use_headers, $allow_redirects, $verify);
+		$result = self::get_base('DELETE', $url, $use_headers, $proxies, $allow_redirects, $verify);
 		return new Response($result['headers'], $result['status_code'], $result['body'], $url);
 	}
 

@@ -255,7 +255,7 @@ class Requests {
 	 * 
 	 * Made to be used similarly to requests.post in Python
 	 * 
-	 * @param string $url             URL (duh)
+	 * @param string $url             URL
 	 * @param mixed  $data            Data in POST body. Assoc. array if form, (almost) anything if JSON, null if nothing
 	 * @param array  $headers         Custom request headers
 	 * @param array  $proxies         Proxy server to use, format: ['http' => '<server URI>']
@@ -281,7 +281,7 @@ class Requests {
 	 * 
 	 * Made to be used similarly to requests.put in Python
 	 * 
-	 * @param string $url             URL (duh)
+	 * @param string $url             URL
 	 * @param mixed  $data            Data in POST body. Assoc. array if form, (almost) anything if JSON, null if nothing
 	 * @param array  $headers         Custom request headers
 	 * @param array  $proxies         Proxy server to use, format: ['http' => '<server URI>']

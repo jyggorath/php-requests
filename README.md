@@ -67,7 +67,7 @@ public static function GET(string $url, array $headers = null, array $proxies = 
 /**
  * Send a HTTP POST request
  * 
- * @param string $url             URL (duh)
+ * @param string $url             URL
  * @param mixed  $data            Data in POST body. Assoc. array if form, (almost) anything if JSON, null if nothing
  * @param array  $headers         Custom request headers
  * @param array  $proxies         Proxy server to use, format: ['http' => '<server URI>']
@@ -83,7 +83,7 @@ public static function POST(string $url, $data = null, array $headers = null, ar
 /**
  * Send a HTTP PUT request
  * 
- * @param string $url             URL (duh)
+ * @param string $url             URL
  * @param mixed  $data            Data in POST body. Assoc. array if form, (almost) anything if JSON, null if nothing
  * @param array  $headers         Custom request headers
  * @param array  $proxies         Proxy server to use, format: ['http' => '<server URI>']

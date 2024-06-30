@@ -11,6 +11,7 @@ Because it's made to fulfil my own needs in my own projects, this library is bot
 * PUT
 * DELETE
 * Response object
+* Proxy (atleast SOCKS5)
 * Handling of redirects (autofollow, or not (but save info about permanent/not permanent, and next (location)))
 * Works with response content in both binary and text
 
@@ -20,7 +21,6 @@ Because it's made to fulfil my own needs in my own projects, this library is bot
 All of these are on the todo list, but I don't consider it necessary to implement them as of now:
 * No support for basic authentication (can be done manually by setting request headers)
 * No support for cookies (can be done manually by setting request headers)
-* No support for proxies
 * Specifying cert not implemented
 
 Currently the members `text` and `content` of the Response object will have the same content. In future versions, `text` will most likely be removed.
@@ -52,55 +52,71 @@ The `Requests` class contain these four public static functions:
 /**
  * Send a HTTP GET request
  * 
+ * Made to be used similarly to requests.get in Python
+ * 
  * @param string $url             URL
  * @param array  $headers         Custom request headers
+ * @param array  $proxies         Proxy server to use, format: ['http' => '<server URI>']
  * @param bool   $allow_redirects Whether or not to follow 30x redirects
  * @param bool   $verify          Whether or not to verify certificate for HTTPS requests
+ *                                Note: Won't allways apply, see Requests::curl_base
  * 
  * @return Response Response object
  */
-public static function GET(string $url, array $headers = null, bool $allow_redirects = true, bool $verify = true) : Response
+public static function GET(string $url, array $headers = null, array $proxies = null, bool $allow_redirects = true, bool $verify = true) : Response
 ```
 ```php
 /**
  * Send a HTTP POST request
  * 
- * @param string $url             URL
+ * Made to be used similarly to requests.post in Python
+ * 
+ * @param string $url             URL (duh)
  * @param mixed  $data            Data in POST body. Assoc. array if form, (almost) anything if JSON, null if nothing
  * @param array  $headers         Custom request headers
+ * @param array  $proxies         Proxy server to use, format: ['http' => '<server URI>']
  * @param bool   $allow_redirects Whether or not to follow 30x redirects
  * @param bool   $verify          Whether or not to verify certificate for HTTPS requests
+ *                                Note: Won't allways apply, see Requests::curl_base
  * 
  * @return Response Response object
  */
-public static function POST(string $url, $data = null, array $headers = null, bool $allow_redirects = true, bool $verify = true) : Response
+public static function POST(string $url, $data = null, array $headers = null, array $proxies = null, bool $allow_redirects = true, bool $verify = true) : Response
 ```
 ```php
 /**
  * Send a HTTP PUT request
  * 
- * @param string $url             URL
+ * Made to be used similarly to requests.put in Python
+ * 
+ * @param string $url             URL (duh)
  * @param mixed  $data            Data in POST body. Assoc. array if form, (almost) anything if JSON, null if nothing
  * @param array  $headers         Custom request headers
+ * @param array  $proxies         Proxy server to use, format: ['http' => '<server URI>']
  * @param bool   $allow_redirects Whether or not to follow 30x redirects
  * @param bool   $verify          Whether or not to verify certificate for HTTPS requests
+ *                                Note: Won't allways apply, see Requests::curl_base
  * 
  * @return Response Response object
  */
-public static function PUT(string $url, $data = null, array $headers = null, bool $allow_redirects = true, bool $verify = true) : Response
+public static function PUT(string $url, $data = null, array $headers = null, array $proxies = null, bool $allow_redirects = true, bool $verify = true) : Response
 ```
 ```php
 /**
  * Send a HTTP DELETE request
  * 
+ * Made to be used similarly to requests.delete in Python
+ * 
  * @param string $url             URL
  * @param array  $headers         Custom request headers
+ * @param array  $proxies         Proxy server to use, format: ['http' => '<server URI>']
  * @param bool   $allow_redirects Whether or not to follow 30x redirects
  * @param bool   $verify          Whether or not to verify certificate for HTTPS requests
+ *                                Note: Won't allways apply, see Requests::curl_base
  * 
  * @return Response Response object
  */
-public static function DELETE(string $url, array $headers = null, bool $allow_redirects = true, bool $verify = true) : Response
+public static function DELETE(string $url, array $headers = null, array $proxies = null, bool $allow_redirects = true, bool $verify = true) : Response
 ```
 The `Response` class contain these members and this one public method:
 ```php
@@ -193,6 +209,10 @@ Request body will look like this:
 ```php
 // Basic DELETE request
 $response = Requests::DELETE('https://github.com/');
+```
+```php
+// GET request through local SOCKS5 proxy
+$response = Requests::GET('https://github.com/', null, ['http' => 'socks5://localhost:8080']);
 ```
 ```php
 $response = Requests::GET('https://github.com/');

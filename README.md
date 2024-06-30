@@ -52,8 +52,6 @@ The `Requests` class contain these four public static functions:
 /**
  * Send a HTTP GET request
  * 
- * Made to be used similarly to requests.get in Python
- * 
  * @param string $url             URL
  * @param array  $headers         Custom request headers
  * @param array  $proxies         Proxy server to use, format: ['http' => '<server URI>']
@@ -68,8 +66,6 @@ public static function GET(string $url, array $headers = null, array $proxies = 
 ```php
 /**
  * Send a HTTP POST request
- * 
- * Made to be used similarly to requests.post in Python
  * 
  * @param string $url             URL (duh)
  * @param mixed  $data            Data in POST body. Assoc. array if form, (almost) anything if JSON, null if nothing
@@ -87,8 +83,6 @@ public static function POST(string $url, $data = null, array $headers = null, ar
 /**
  * Send a HTTP PUT request
  * 
- * Made to be used similarly to requests.put in Python
- * 
  * @param string $url             URL (duh)
  * @param mixed  $data            Data in POST body. Assoc. array if form, (almost) anything if JSON, null if nothing
  * @param array  $headers         Custom request headers
@@ -104,8 +98,6 @@ public static function PUT(string $url, $data = null, array $headers = null, arr
 ```php
 /**
  * Send a HTTP DELETE request
- * 
- * Made to be used similarly to requests.delete in Python
  * 
  * @param string $url             URL
  * @param array  $headers         Custom request headers

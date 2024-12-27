@@ -20,7 +20,6 @@ Because it's made to fulfil my own needs in my own projects, this library is bot
 
 All of these are on the todo list, but I don't consider it necessary to implement them as of now:
 * No support for basic authentication (can be done manually by setting request headers)
-* No support for cookies (can be done manually by setting request headers)
 * Specifying cert not implemented
 
 Currently the members `text` and `content` of the Response object will have the same content. In future versions, `text` will most likely be removed.
@@ -205,6 +204,10 @@ $response = Requests::DELETE('https://github.com/');
 ```php
 // GET request through local SOCKS5 proxy
 $response = Requests::GET('https://github.com/', null, ['http' => 'socks5://localhost:8080']);
+```
+```php
+// GET request with cookies
+$response = Requests::GET('https://github.com/', null, ['cookie1' => 'yes123', 'cookie2' => 'no987']);
 ```
 ```php
 $response = Requests::GET('https://github.com/');
